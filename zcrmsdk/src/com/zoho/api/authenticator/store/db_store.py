@@ -3,7 +3,7 @@ try:
     import mysql.connector
     from mysql.connector import Error
     from zcrmsdk.src.com.zoho.api.authenticator.store.token_store import TokenStore
-    from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken, TokenType
+    from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken
     from zcrmsdk.src.com.zoho.crm.api.util.constants import Constants
     from zcrmsdk.src.com.zoho.crm.api.exception.sdk_exception import SDKException
 
@@ -11,7 +11,7 @@ except Exception as e:
     import mysql.connector
     from mysql.connector import Error
     from .token_store import TokenStore
-    from ..oauth_token import OAuthToken, TokenType
+    from ..oauth_token import OAuthToken
     from ....crm.api.util.constants import Constants
     from zcrmsdk.src.com.zoho.crm.api.exception.sdk_exception import SDKException
 
@@ -22,7 +22,9 @@ class DBStore(TokenStore):
     This class to store user token details to the MySQL DataBase.
     """
 
-    def __init__(self, host=None, database_name=None, user_name=None, password=None, port_number=None):
+    def __init__(self, host=Constants.MYSQL_HOST, database_name=Constants.MYSQL_DATABASE_NAME,
+                 user_name=Constants.MYSQL_USER_NAME, password="", port_number=Constants.MYSQL_PORT_NUMBER,
+                 table_name=Constants.MYSQL_TABLE_NAME):
 
         """
         Creates a DBStore class instance with the specified parameters.
@@ -35,29 +37,97 @@ class DBStore(TokenStore):
             port_number (str) : A string containing the DataBase port number. Default value is 3306
         """
 
-        self.host = host if host is not None else Constants.MYSQL_HOST
-        self.database_name = database_name if database_name is not None else Constants.MYSQL_DATABASE_NAME
-        self.user_name = user_name if user_name is not None else Constants.MYSQL_USER_NAME
-        self.password = password if password is not None else ""
-        self.port_number = port_number if port_number is not None else Constants.MYSQL_PORT_NUMBER
+        self.__host = host
+        self.__database_name = database_name
+        self.__user_name = user_name
+        self.__password = password
+        self.__port_number = port_number
+        self.__table_name = table_name
+
+    def get_host(self):
+        """
+        This is a getter method to get __host.
+
+        Returns:
+            string: A string representing __host
+        """
+
+        return self.__host
+
+    def get_database_name(self):
+        """
+        This is a getter method to get __database_name.
+
+        Returns:
+            string: A string representing __database_name
+        """
+
+        return self.__database_name
+
+    def get_user_name(self):
+        """
+        This is a getter method to get __user_name.
+
+        Returns:
+            string: A string representing __user_name
+        """
+
+        return self.__user_name
+
+    def get_password(self):
+        """
+        This is a getter method to get __password.
+
+        Returns:
+            string: A string representing __password
+        """
+        return self.__password
+
+    def get_port_number(self):
+        """
+        This is a getter method to get __port_number.
+
+        Returns:
+            string: A string representing __port_number
+        """
+
+        return self.__port_number
+
+    def get_table_name(self):
+        """
+        This is a getter method to get __table_name.
+
+        Returns:
+            string: A string representing __table_name
+        """
+
+        return self.__table_name
 
     def get_token(self, user, token):
         cursor = None
         try:
-            connection = mysql.connector.connect(host=self.host, database=self.database_name, user=self.user_name, password=self.password, port=self.port_number)
+            connection = mysql.connector.connect(host=self.__host, database=self.__database_name, user=self.__user_name, password=self.__password, port=self.__port_number)
             try:
                 if isinstance(token, OAuthToken):
                     cursor = connection.cursor()
-                    query = self.construct_dbquery(user.email, token, False)
+                    query = self.construct_dbquery(user.get_email(), token, False)
                     cursor.execute(query)
                     result = cursor.fetchone()
 
                     if result is not None:
-                        token.access_token = result[4]
-                        token.expires_in = result[6]
-                        token.refresh_token = result[3]
 
-                        return token
+                        oauthtoken = token
+                        oauthtoken.set_id(result[0])
+                        oauthtoken.set_user_mail(result[1])
+                        oauthtoken.set_client_id(result[2])
+                        oauthtoken.set_client_secret(result[3])
+                        oauthtoken.set_refresh_token(result[4])
+                        oauthtoken.set_access_token(result[5])
+                        oauthtoken.set_grant_token(result[6])
+                        oauthtoken.set_expires_in(str(result[7]))
+                        oauthtoken.set_redirect_url(result[8])
+                        
+                        return oauthtoken
 
             except Error as ex:
                 raise ex
@@ -72,15 +142,15 @@ class DBStore(TokenStore):
     def save_token(self, user, token):
         cursor = None
         try:
-            connection = mysql.connector.connect(host=self.host, database=self.database_name, user=self.user_name, password=self.password, port=self.port_number)
+            connection = mysql.connector.connect(host=self.__host, database=self.__database_name, user=self.__user_name, password=self.__password, port=self.__port_number)
 
             try:
                 if isinstance(token, OAuthToken):
-                    token.user_mail = user.email
+                    token.set_user_mail(user.get_email())
                     self.delete_token(token)
                     cursor = connection.cursor()
-                    query = "insert into oauthtoken (user_mail,client_id,refresh_token,access_token,grant_token,expiry_time) values (%s,%s,%s,%s,%s,%s);"
-                    val = (user.email, token.client_id, token.refresh_token, token.access_token, token.grant_token, token.expires_in)
+                    query = "insert into "+self.__table_name+" (id,user_mail,client_id,client_secret,refresh_token,access_token,grant_token,expiry_time,redirect_url) values (%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+                    val = (token.get_id(), user.get_email(), token.get_client_id(), token.get_client_secret(), token.get_refresh_token(), token.get_access_token(), token.get_grant_token(), token.get_expires_in(), token.get_redirect_url())
                     cursor.execute(query, val)
                     connection.commit()
 
@@ -97,12 +167,12 @@ class DBStore(TokenStore):
     def delete_token(self, token):
         cursor = None
         try:
-            connection = mysql.connector.connect(host=self.host, database=self.database_name, user=self.user_name, password=self.password, port=self.port_number)
+            connection = mysql.connector.connect(host=self.__host, database=self.__database_name, user=self.__user_name, password=self.__password, port=self.__port_number)
 
             try:
                 if isinstance(token, OAuthToken):
                     cursor = connection.cursor()
-                    query = self.construct_dbquery(token.user_mail, token, True)
+                    query = self.construct_dbquery(token.get_user_mail(), token, True)
                     cursor.execute(query)
                     connection.commit()
 
@@ -119,23 +189,23 @@ class DBStore(TokenStore):
     def get_tokens(self):
         cursor = None
         try:
-            connection = mysql.connector.connect(host=self.host, database=self.database_name, user=self.user_name, password=self.password, port=self.port_number)
+            connection = mysql.connector.connect(host=self.__host, database=self.__database_name, user=self.__user_name, password=self.__password, port=self.__port_number)
             tokens = []
 
             try:
                 cursor = connection.cursor()
-                query = 'select * from oauthtoken;'
+                query = 'select * from ' + self.__table_name + ";"
                 cursor.execute(query)
                 results = cursor.fetchall()
 
                 for result in results:
-                    token_type = TokenType.REFRESH if (result[5] is None or result[5] == 'null') else TokenType.GRANT
-                    token_value = result[5] if token_type == TokenType.GRANT else result[3]
-                    token = OAuthToken(result[2], None, token_value, token_type)
-                    token.id = result[0]
-                    token.expires_in = result[6]
-                    token.user_mail = result[1]
-                    token.access_token = result[4]
+
+                    token = OAuthToken(client_id=result[2], client_secret=result[3], refresh_token=result[4], grant_token=result[6])
+                    token.set_id(result[0])
+                    token.set_user_mail(result[1])
+                    token.set_access_token(result[5])
+                    token.set_expires_in(str(result[7]))
+                    token.set_redirect_url(result[8])
                     tokens.append(token)
 
                 return tokens
@@ -153,11 +223,11 @@ class DBStore(TokenStore):
     def delete_tokens(self):
         cursor = None
         try:
-            connection = mysql.connector.connect(host=self.host, database=self.database_name, user=self.user_name, password=self.password, port=self.port_number)
+            connection = mysql.connector.connect(host=self.__host, database=self.__database_name, user=self.__user_name, password=self.__password, port=self.__port_number)
 
             try:
                 cursor = connection.cursor()
-                query = 'delete from oauthtokens;'
+                query = 'delete from ' + self.__table_name + ";"
                 cursor.execute(query)
                 connection.commit()
 
@@ -168,19 +238,57 @@ class DBStore(TokenStore):
                 cursor.close() if cursor is not None else None
                 connection.close() if connection is not None else None
         except Error as ex:
-            raise SDKException(Constants.TOKEN_STORE, Constants.DELETE_TOKENS_DB_ERROR, None, ex)
+            raise SDKException(Constants.TOKEN_STORE, Constants.DELETE_TOKENS_DB_ERROR, Exception=ex)
+
+    def get_token_by_id(self, id, token):
+        cursor = None
+        try:
+            connection = mysql.connector.connect(host=self.__host, database=self.__database_name, user=self.__user_name, password=self.__password, port=self.__port_number)
+            try:
+                if isinstance(token, OAuthToken):
+
+                    query = "select * from " + self.__table_name + " where id='" + id + "'"
+                    oauthtoken = token
+                    cursor = connection.cursor()
+                    cursor.execute(query)
+                    results = cursor.fetchall()
+
+                    for result in results:
+                        if result[0] == id:
+
+                            oauthtoken.set_id(result[0])
+                            oauthtoken.set_user_mail(result[1])
+                            oauthtoken.set_client_id(result[2])
+                            oauthtoken.set_client_secret(result[3])
+                            oauthtoken.set_refresh_token(result[4])
+                            oauthtoken.set_access_token(result[5])
+                            oauthtoken.set_grant_token(result[6])
+                            oauthtoken.set_expires_in(str(result[7]))
+                            oauthtoken.set_redirect_url(result[8])
+                            
+                            return oauthtoken
+
+            except Error as ex:
+                raise ex
+
+            finally:
+                cursor.close() if cursor is not None else None
+                connection.close() if connection is not None else None
+
+        except Error as ex:
+            raise SDKException(code=Constants.TOKEN_STORE, message=Constants.GET_TOKEN_BY_ID_DB_ERROR, cause=ex)
 
     def construct_dbquery(self, email, token, is_delete):
         if email is None:
             raise SDKException(Constants.USER_MAIL_NULL_ERROR, Constants.USER_MAIL_NULL_ERROR_MESSAGE)
 
         query = "delete from " if is_delete is True else "select * from "
-        query += "oauthtoken " + "where user_mail ='" + email + "' and client_id='" + token.client_id + "' and "
+        query += self.__table_name + " where user_mail ='" + email + "' and client_id='" + token.get_client_id() + "' and "
 
-        if token.grant_token is not None:
-            query += "grant_token='" + token.grant_token + "'"
+        if token.get_grant_token() is not None:
+            query += "grant_token='" + token.get_grant_token() + "'"
 
         else:
-            query += "refresh_token='" + token.refresh_token + "'"
+            query += "refresh_token='" + token.get_refresh_token() + "'"
 
         return query

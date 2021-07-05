@@ -77,4 +77,19 @@ class TokenStore(ABC):
         The method to delete all the stored tokens.
         """
 
-        pass
+    pass
+    @abstractmethod
+    def get_token_by_id(self, id, token):
+
+        """
+        The method to get id token details.
+
+        Parameters:
+            id (String) : A String id.
+            token (Token) : A Token class instance.
+
+        Returns:
+            Token : A Token class instance representing the id token details.
+        """
+
+    pass

@@ -28,7 +28,7 @@ class DataCenter(ABC):
 
     class Environment(object):
 
-        def __init__(self, url, accounts_url, file_upload_url):
+        def __init__(self, url, accounts_url, file_upload_url, name):
 
             """
             Creates an Environment class instance with the specified parameters.
@@ -40,4 +40,5 @@ class DataCenter(ABC):
             self.url = url
             self.accounts_url = accounts_url
             self.file_upload_url = file_upload_url
+            self.name = name
             return

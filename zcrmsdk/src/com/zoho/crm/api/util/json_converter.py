@@ -53,7 +53,8 @@ class JSONConverter(Converter):
                 request_class_path_lower = request_object_class_name.lower()
                 if class_name_interface_lower == request_class_path_lower:
                     class_detail = dict(Initializer.json_details[str(class_name)])
-
+                    class_name = str(class_name).rpartition(".")
+                    class_name = self.module_to_class(class_name[-1])
                     break
 
         try:
@@ -120,15 +121,11 @@ class JSONConverter(Converter):
                         required_in_update_keys.pop(key_name, None)
 
                     if isinstance(request_instance, FileDetails):
-                        if key_name.lower() == Constants.ATTACHMENT_ID.lower():
-                            request_json[key_name.lower()] = field_value
-
-                        elif key_name.lower() == Constants.FILE_ID.lower():
-                            request_json[key_name.lower()] = field_value
-
-                        else:
+                        if field_value is None or (isinstance(field_value,str) and field_value == "null"):
                             request_json[key_name.lower()] = None if field_value is None else field_value
-
+                        else:
+                            request_json[key_name.lower()] = field_value
+                        
                     else:
                         request_json[key_name] = self.set_data(member_detail, field_value)
 
@@ -507,7 +504,8 @@ class JSONConverter(Converter):
         member_value = None
 
         if key_data is not None:
-            data_type = member_detail[Constants.TYPE]
+
+            data_type = member_detail.get(Constants.TYPE)
 
             if data_type == Constants.LIST_NAMESPACE:
                 member_value = self.get_collections_data(key_data, member_detail)
@@ -517,7 +515,7 @@ class JSONConverter(Converter):
 
             elif data_type == Constants.CHOICE_NAMESPACE or (
                     Constants.STRUCTURE_NAME in member_detail and member_detail[
-                Constants.STRUCTURE_NAME] == Constants.CHOICE_NAMESPACE):
+                    Constants.STRUCTURE_NAME] == Constants.CHOICE_NAMESPACE):
                 member_value = self.__get_choice_instance(key_data)
 
             elif Constants.STRUCTURE_NAME in member_detail and Constants.MODULE in member_detail:
@@ -585,8 +583,7 @@ class JSONConverter(Converter):
             import os
             from ..initializer import Initializer
 
-        record_field_details_path = os.path.join(Initializer.get_initializer().resource_path,
-                                                 Constants.FIELD_DETAILS_DIRECTORY, Converter.get_encoded_file_name())
+        record_field_details_path = os.path.join(Initializer.get_initializer().resource_path,Constants.FIELD_DETAILS_DIRECTORY, Converter.get_encoded_file_name())
 
         record_field_details = Initializer.get_json(record_field_details_path)
         module_detail = Utility.get_json_object(record_field_details, module)
@@ -652,10 +649,8 @@ class JSONConverter(Converter):
                         data_type = Constants.LIST_NAMESPACE
 
                     if data_type == member_detail[Constants.TYPE] or (
-                            member_detail[Constants.TYPE] in Constants.TYPE_VS_DATATYPE and isinstance(key_data,
-                                                                                                       Constants.TYPE_VS_DATATYPE[
-                                                                                                           member_detail[
-                                                                                                               Constants.TYPE]])):
+                            member_detail[Constants.TYPE] in Constants.DATA_TYPE and isinstance(key_data, Constants.DATA_TYPE.get(member_detail[Constants.TYPE]))):
+
                         matches += 1
 
                     elif member_detail[Constants.TYPE] == Constants.CHOICE_NAMESPACE:
@@ -676,8 +671,8 @@ class JSONConverter(Converter):
 
         return matches / total_points
 
-    def build_name(self, member_name):
-        name_split = str(member_name).split('_')
+    def build_name(self, key_name):
+        name_split = str(key_name).split('_')
         sdk_name = name_split[0].lower()
 
         if len(name_split) > 1:
@@ -695,18 +690,6 @@ class JSONConverter(Converter):
 
         return class_holder()
 
-    def module_to_class(self, module_name):
-        class_name = module_name
-
-        if "_" in module_name:
-            class_name = ''
-            module_split = str(module_name).split('_')
-
-            for each_name in module_split:
-                each_name = each_name.capitalize()
-                class_name += each_name
-
-        return class_name
 
     def construct_private_member(self, class_name, member_name):
         return '_' + class_name + '__' + member_name

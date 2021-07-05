@@ -71,28 +71,41 @@ class APIHTTPConnector(object):
         response = None
         proxies = None
         logger = logging.getLogger('SDKLogger')
+        initializer = Initializer.get_initializer()
+        sdk_config = initializer.sdk_config
+        read_timeout =sdk_config.get_read_timeout()
+        connect_timeout = sdk_config.get_connect_timeout()
+
+        if read_timeout is None and connect_timeout is None:
+            timeout = None
+        elif read_timeout is None:
+            timeout = connect_timeout
+        elif connect_timeout is None:
+            timeout = read_timeout
+        else:
+            timeout = (connect_timeout, read_timeout)
 
         if self.content_type is not None:
             self.set_content_type_header()
 
-        if Initializer.get_initializer().request_proxy is not None:
-            request_proxy = Initializer.get_initializer().request_proxy
+        if initializer.request_proxy is not None:
+            request_proxy = initializer.request_proxy
             auth = ""
 
-            if request_proxy.user is not None:
-                auth = request_proxy.user + ':' + request_proxy.password + '@'
+            if request_proxy is not None:
+                auth = request_proxy.get_user() + ':' + request_proxy.get_password() + '@'
 
-            if Constants.HTTP in request_proxy.host:
-                host_split = request_proxy.host.split('://')
+            if Constants.HTTP in request_proxy.get_host():
+                host_split = request_proxy.get_host().split('://')
                 scheme = host_split[0]
                 proxies = {
-                    scheme: scheme + '://' + auth + host_split[1] + ':' + str(request_proxy.port)
+                    scheme: scheme + '://' + auth + host_split[1] + ':' + str(request_proxy.get_port())
                 }
 
             else:
                 proxies = {
-                    Constants.HTTP: Constants.HTTP + '://' + auth + request_proxy.host + ':' + str(request_proxy.port),
-                    Constants.HTTPS: Constants.HTTPS + '://' + auth + request_proxy.host + ':' + str(request_proxy.port)
+                    Constants.HTTP: Constants.HTTP + '://' + auth + request_proxy.get_host() + ':' + str(request_proxy.get_port()),
+                    Constants.HTTPS: Constants.HTTPS + '://' + auth + request_proxy.get_host() + ':' + str(request_proxy.get_port())
                 }
 
             logger.info(self.proxy_log(request_proxy))
@@ -100,7 +113,7 @@ class APIHTTPConnector(object):
         logger.info(self.__str__())
 
         if self.request_method == Constants.REQUEST_METHOD_GET:
-            response = requests.get(url=self.url, headers=self.headers, params=self.parameters, allow_redirects=False, proxies=proxies)
+            response = requests.get(url=self.url, headers=self.headers, params=self.parameters, allow_redirects=False, proxies=proxies,timeout=timeout)
 
         elif self.request_method == Constants.REQUEST_METHOD_PUT:
             data = None
@@ -136,18 +149,20 @@ class APIHTTPConnector(object):
         request_headers = self.headers.copy()
         request_headers[Constants.AUTHORIZATION] = Constants.CANT_DISCLOSE
 
-        return self.request_method + ' - ' + Constants.URL + ' = ' + self.url + ' , ' + Constants.HEADERS + ' = ' + json.dumps(request_headers) \
+        return self.request_method + ' - ' + Constants.URL + ' = ' + self.url + ' , ' + Constants.HEADERS + ' = ' +\
+               json.dumps(request_headers) \
                + ' , ' + Constants.PARAMS + ' = ' + json.dumps(self.parameters) + '.'
 
-    def proxy_log(self, request_proxy):
-        proxy_details = Constants.PROXY_SETTINGS + Constants.PROXY_HOST + str(request_proxy.host) + ', ' + Constants.PROXY_PORT + str(request_proxy.port)
+    @staticmethod
+    def proxy_log(request_proxy):
+        proxy_details = Constants.PROXY_SETTINGS + Constants.PROXY_HOST + str(request_proxy.get_host()) + ', ' + Constants.PROXY_PORT + str(request_proxy.get_port())
         if request_proxy.user is not None:
-            proxy_details = proxy_details + ', ' + Constants.PROXY_USER + str(request_proxy.user)
+            proxy_details = proxy_details + ', ' + Constants.PROXY_USER + str(request_proxy.get_user())
 
         return proxy_details
 
     def set_content_type_header(self):
-        for url in Constants.SET_TO_CONTENT_TYPE:
+        for url in Constants.SET_CONTENT_TYPE_HEADER:
             if url in self.url:
                 self.headers[Constants.CONTENT_TYPE_HEADER] = self.content_type
                 return

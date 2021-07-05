@@ -85,22 +85,14 @@ class Downloader(Converter):
 
             return instance
 
-    def construct_private_member(self, class_name, member_name):
+    @staticmethod
+    def construct_private_member(class_name, member_name):
         return '_' + class_name + '__' + member_name
 
-    def get_class(self, class_name, class_path):
+    @staticmethod
+    def get_class(class_name, class_path):
         imported_module = importlib.import_module(class_path)
         class_holder = getattr(imported_module, class_name)
         return class_holder
 
-    def module_to_class(self, module_name):
-        class_name = module_name
 
-        if "_" in module_name:
-            class_name = ''
-            module_split = str(module_name).split('_')
-            for each_name in module_split:
-                each_name = each_name.capitalize()
-                class_name += each_name
-
-        return class_name

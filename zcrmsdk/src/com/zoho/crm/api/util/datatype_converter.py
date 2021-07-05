@@ -46,41 +46,28 @@ class DataTypeConverter(object):
 
     @staticmethod
     def post_convert_object_data(obj):
+
+        if obj is None:
+            return None
         if isinstance(obj, list):
             list_value = []
             for data in obj:
-                if isinstance(data, date):
-                    list_value.append(DataTypeConverter.post_convert(data, "Date"))
-                elif isinstance(data, datetime):
-                    list_value.append(DataTypeConverter.post_convert(data, "DateTime"))
-                elif isinstance(data, dict):
-                    list_value.append(DataTypeConverter.post_convert_object_data(data))
-                else:
-                    list_value.append(data)
+                list_value.append(DataTypeConverter.post_convert_object_data(data))
 
             return list_value
 
         elif isinstance(obj, dict):
             dict_value = {}
             for key, value in obj.items():
-                if isinstance(value, list):
-                    dict_value[key] = DataTypeConverter.post_convert_object_data(value)
-                elif isinstance(value, date):
-                    dict_value[key] = DataTypeConverter.post_convert(value, "Date")
-                elif isinstance(value, datetime):
-                    dict_value[key] = DataTypeConverter.post_convert(value, "DateTime")
-                elif isinstance(value, dict):
-                    dict_value[key] = DataTypeConverter.post_convert_object_data(value)
-                else:
-                    dict_value[key] = value
+                dict_value[key] = DataTypeConverter.post_convert_object_data(value)
 
             return dict_value
 
         elif isinstance(obj, date):
-            return DataTypeConverter.post_convert(obj, "Date")
+            return DataTypeConverter.post_convert(obj, Constants.DATE_NAMESPACE)
 
         elif isinstance(obj, datetime):
-            return DataTypeConverter.post_convert(obj, "DateTime")
+            return DataTypeConverter.post_convert(obj, Constants.DATETIME_NAMESPACE)
 
         else:
             return obj
@@ -109,7 +96,8 @@ class DataTypeConverter(object):
         """
 
         DataTypeConverter.init()
-        return DataTypeConverter.pre_converter_map[data_type](obj)
+        if data_type in DataTypeConverter.pre_converter_map:
+            return DataTypeConverter.pre_converter_map[data_type](obj)
 
     @staticmethod
     def post_convert(obj, data_type):
@@ -122,4 +110,5 @@ class DataTypeConverter(object):
         """
 
         DataTypeConverter.init()
-        return DataTypeConverter.post_converter_map[data_type](obj)
+        if data_type in DataTypeConverter.post_converter_map:
+            return DataTypeConverter.post_converter_map[data_type](obj)
