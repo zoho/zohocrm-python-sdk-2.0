@@ -32,4 +32,14 @@ class UserSignature(object):
 
             raise SDKException(Constants.USER_SIGNATURE_ERROR, details=error)
 
-        self.email = email
+        self.__email = email
+
+    def get_email(self):
+        """
+        This is a getter method to get __email.
+
+        Returns:
+            string: A string representing __email
+        """
+
+        return self.__email

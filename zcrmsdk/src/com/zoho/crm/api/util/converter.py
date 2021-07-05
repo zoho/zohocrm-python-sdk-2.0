@@ -7,7 +7,7 @@ try:
     import re
     import os
     import importlib
-    from zcrmsdk.src.com.zoho.crm.api.util.choice import Choice
+    from zcrmsdk.src.com.zoho.crm.api.util import Utility, Choice
 
 except Exception:
     from abc import ABC, abstractmethod
@@ -18,6 +18,7 @@ except Exception:
     import re
     import os
     import importlib
+    from .utility import Utility
     from .choice import Choice
 
 
@@ -85,6 +86,7 @@ class Converter(ABC):
         """
         pass
 
+
     def value_checker(self, class_name, member_name, key_details, value, unique_values_map, instance_number):
 
         """
@@ -113,9 +115,24 @@ class Converter(ABC):
         data_type = key_details[Constants.TYPE]
         check = True
         given_type = None
-        expected_type = None
 
-        if data_type in Constants.TYPE_VS_DATATYPE:
+        if value is not None:
+            if Constants.INTERFACE in key_details and key_details[Constants.INTERFACE]:
+                interface_details = Initializer.get_initializer().json_details[key_details[Constants.STRUCTURE_NAME]]
+                classes = interface_details[Constants.CLASSES]
+                check = False
+                for each_class in classes:
+                    path_split = str(value.__class__.__module__).rpartition(".")
+                    class_name = self.module_to_class(path_split[-1])
+                    pack = path_split[0] + "." + class_name
+
+                    if pack == each_class:
+                        check = True
+                        break
+            else:
+                given_type = value.__class__.__module__
+
+        if data_type in Constants.DATA_TYPE:
             if isinstance(value, list) and Constants.STRUCTURE_NAME in key_details:
                 structure_name = key_details[Constants.STRUCTURE_NAME]
                 index = 0
@@ -133,9 +150,7 @@ class Converter(ABC):
 
                     index = index + 1
             else:
-                check = False if not isinstance(value, Constants.TYPE_VS_DATATYPE.get(data_type)) else True
-                data_type = Constants.TYPE_VS_DATATYPE.get(data_type).__name__
-                given_type = type(value).__name__
+                check = Utility.check_data_type(value=value, type=data_type)
 
         elif value is not None and data_type.lower() != Constants.OBJECT_KEY:
             path_split = str(data_type).rpartition('.')
@@ -144,7 +159,6 @@ class Converter(ABC):
 
             if not isinstance(value, class_holder):
                 check = False
-                given_type = type(value).__name__
 
         if not check:
             details_jo[Constants.FIELD] = name
@@ -165,6 +179,7 @@ class Converter(ABC):
             if value not in values_ja:
                 details_jo[Constants.FIELD] = member_name
                 details_jo[Constants.CLASS] = class_name
+                details_jo[Constants.GIVEN_VALUE] = value
                 details_jo[Constants.ACCEPTED_VALUES] = values_ja
                 if instance_number is not None:
                     details_jo[Constants.INDEX] = instance_number
@@ -233,9 +248,22 @@ class Converter(ABC):
         except Exception:
             from ..initializer import Initializer
 
-        file_name = Initializer.get_initializer().user.email
+        file_name = Initializer.get_initializer().user.get_email()
         file_name = file_name.split("@", 1)[0] + Initializer.get_initializer().environment.url
         input_bytes = file_name.encode("UTF-8")
         encoded_string = base64.b64encode(input_bytes)
         encoded_string = str(encoded_string.decode("UTF-8"))
         return encoded_string + '.json'
+
+
+    def module_to_class(self, module_name):
+        class_name = module_name
+
+        if "_" in module_name:
+            class_name = ''
+            module_split = str(module_name).split('_')
+            for each_name in module_split:
+                each_name = each_name.capitalize()
+                class_name += each_name
+
+        return class_name

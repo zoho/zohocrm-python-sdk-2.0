@@ -59,7 +59,7 @@ You can include the SDK to your project using:
     - Run the command below:
 
     ```sh
-    pip install zohocrmsdk2_0==1.x.x
+    pip install zohocrmsdk2_0==2.x.x
     ```
 - The Python SDK will be installed in your client application.
 

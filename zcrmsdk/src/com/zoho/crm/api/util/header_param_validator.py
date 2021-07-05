@@ -32,27 +32,22 @@ class HeaderParamValidator(object):
             type_detail = self.get_key_json_details(name, json_details[json_class_name])
 
         if type_detail is not None:
-            if not self.check_data_type(type_detail, value):
+            try:
+                from zcrmsdk.src.com.zoho.crm.api.util.utility import Utility
+            except Exception:
+                from ..util.utility import Utility
+            if not Utility.check_data_type(value, type_detail[Constants.TYPE]):
                 param_or_header = 'PARAMETER' if json_class_name is not None and json_class_name.endswith('Param') else 'HEADER'
                 error_details = {
                     param_or_header: name,
                     Constants.CLASS: json_class_name,
-                    Constants.ACCEPTED_TYPE: Constants.TYPE_VS_DATATYPE[type_detail[Constants.TYPE]].__name__ if type_detail[Constants.TYPE] in Constants.TYPE_VS_DATATYPE else type_detail[Constants.TYPE]
+                    Constants.ACCEPTED_TYPE: Constants.DATA_TYPE.get(type_detail[Constants.TYPE]).__name__ if type_detail[Constants.TYPE] in Constants.DATA_TYPE else type_detail[Constants.TYPE]
                 }
                 raise SDKException(code=Constants.TYPE_ERROR, details=error_details)
             else:
                 value = DataTypeConverter.post_convert(value, type_detail[Constants.TYPE])
 
         return value
-
-    def check_data_type(self, key_detail, value):
-        data_type = key_detail[Constants.TYPE]
-
-        if data_type in Constants.TYPE_VS_DATATYPE:
-            if not isinstance(value, Constants.TYPE_VS_DATATYPE[data_type]):
-                return False
-
-        return True
 
     def get_key_json_details(self, name, json_details):
         for key_name in json_details.keys():

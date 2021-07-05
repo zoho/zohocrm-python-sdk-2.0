@@ -18,7 +18,7 @@ class EUDataCenter(DataCenter):
         :return: An instance of Environments
         """
 
-        return DataCenter.Environment("https://www.zohoapis.eu", cls().get_iam_url(), cls().get_file_upload_url())
+        return DataCenter.Environment("https://www.zohoapis.eu", cls().get_iam_url(), cls().get_file_upload_url(), "eu_prd")
 
     @classmethod
     def SANDBOX(cls):
@@ -28,7 +28,7 @@ class EUDataCenter(DataCenter):
         :return: An instance of Environment
         """
 
-        return DataCenter.Environment("https://sandbox.zohoapis.eu", cls().get_iam_url(), cls().get_file_upload_url())
+        return DataCenter.Environment("https://sandbox.zohoapis.eu", cls().get_iam_url(), cls().get_file_upload_url(), "eu_sdb")
 
     @classmethod
     def DEVELOPER(cls):
@@ -38,7 +38,7 @@ class EUDataCenter(DataCenter):
         :return:  An instance of Environment
         """
 
-        return DataCenter.Environment("https://developer.zohoapis.eu", cls().get_iam_url(), cls().get_file_upload_url())
+        return DataCenter.Environment("https://developer.zohoapis.eu", cls().get_iam_url(), cls().get_file_upload_url(), "eu_dev")
 
     def get_iam_url(self):
         return "https://accounts.zoho.eu/oauth/v2/token"

@@ -2,7 +2,7 @@ from .deleted_record import DeletedRecord
 from .criteria import Criteria
 from .file_details import FileDetails
 from .pricing_details import PricingDetails
-from .record_operations import RecordOperations, GetRecordParam, GetRecordHeader, UpdateRecordHeader, DeleteRecordParam, DeleteRecordHeader, GetRecordsParam, GetRecordsHeader, UpdateRecordsHeader, DeleteRecordsParam, DeleteRecordsHeader, UpsertRecordsHeader, GetDeletedRecordsParam, GetDeletedRecordsHeader, SearchRecordsParam, SearchRecordsHeader, GetMassUpdateStatusParam
+from .record_operations import RecordOperations, GetRecordParam, GetRecordHeader, UpdateRecordHeader, DeleteRecordParam, DeleteRecordHeader, GetRecordsParam, GetRecordsHeader, CreateRecordsHeader, UpdateRecordsHeader, DeleteRecordsParam, DeleteRecordsHeader, UpsertRecordsHeader, GetDeletedRecordsParam, GetDeletedRecordsHeader, SearchRecordsParam, SearchRecordsHeader, GetMassUpdateStatusParam, GetRecordUsingExternalIDParam, GetRecordUsingExternalIDHeader, UpdateRecordUsingExternalIDHeader, DeleteRecordUsingExternalIDParam, DeleteRecordUsingExternalIDHeader
 from .api_exception import APIException
 from .response_handler import ResponseHandler
 from .action_response import ActionResponse
