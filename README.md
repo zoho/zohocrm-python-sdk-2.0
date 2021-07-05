@@ -1,4 +1,4 @@
-#  ZOHO CRM PYTHON SDK
+#  ZOHO CRM PYTHON SDK 2.0
 
 ## Table Of Contents
 
@@ -18,7 +18,6 @@
   * [Multithreading in a Multi-User App](#multithreading-in-a-multi-user-app)
   * [Multi-threading in a Single User App](#multi-threading-in-a-single-user-app)
 * [Sample Code](#sdk-sample-code)
-
 ## Overview
 
 Zoho CRM PYTHON SDK offers a way to create client Python applications that can be integrated with Zoho CRM.
@@ -108,8 +107,10 @@ In case the user prefers to use default DataBase persistence, **MySQL** can be u
   - id int(11)
 
   - user_mail varchar(255)
-
+  
   - client_id varchar(255)
+  
+  - client_secret varchar(255)
 
   - refresh_token varchar(255)
 
@@ -118,19 +119,26 @@ In case the user prefers to use default DataBase persistence, **MySQL** can be u
   - grant_token varchar(255)
 
   - expiry_time varchar(20)
+  
+  - redirect_url varchar(255)
 
 #### MySQL Query
 
 ```sql
-create table oauthtoken(id int(11) not null auto_increment, user_mail varchar(255) not null, client_id varchar(255), refresh_token varchar(255), access_token varchar(255), grant_token varchar(255), expiry_time varchar(20), primary key (id));
-
+CREATE TABLE  oauthtoken (
+  id varchar(255) NOT NULL,
+  user_mail varchar(255) NOT NULL,
+  client_id varchar(255),
+  client_secret varchar(255),
+  refresh_token varchar(255),
+  access_token varchar(255),
+  grant_token varchar(255),
+  expiry_time varchar(20),
+  redirect_url varchar(255),
+  primary key (id)
+) 
 alter table oauthtoken auto_increment = 1;
 ```
-
-#### Note
-The Database persistence requires the following libraries
-- [mysql-connector](https://pypi.org/project/mysql-connector/)
-- [mysql-connector-python](https://pypi.org/project/mysql-connector-python/)
 
 #### Create DBStore object
 
@@ -143,10 +151,11 @@ DBStore takes the following parameters
 3 -> DataBase user name. Default value "root"
 4 -> DataBase password. Default value ""
 5 -> DataBase port number. Default value "3306"
+6->  DataBase table name . Default value "oauthtoken"
 """
 store = DBStore()
 
-store = DBStore(host='host_name', database_name='database_name', user_name='user_name', password='password', port_number='port_number')
+store = DBStore(host='host_name', database_name='database_name', user_name='user_name', password='password', port_number='port_number', table_name = "table_name")
 ```
 
 ### File Persistence
@@ -154,10 +163,13 @@ store = DBStore(host='host_name', database_name='database_name', user_name='user
 In case of File Persistence, the user can persist tokens in the local drive, by providing the absolute file path to the FileStore object.
 
 - The File contains
-
+    - id 
+    
     - user_mail
 
     - client_id
+    
+    - client_secret
 
     - refresh_token
 
@@ -166,6 +178,8 @@ In case of File Persistence, the user can persist tokens in the local drive, by 
     - grant_token
 
     - expiry_time
+    
+    - redirect_url
 
 #### Create FileStore object
 
@@ -220,7 +234,7 @@ class CustomStore(TokenStore):
 
         # Add code to delete the token
     
-    def get_tokens():
+    def get_tokens(self):
 
         """
         Returns:
@@ -229,10 +243,22 @@ class CustomStore(TokenStore):
 
         # Add code to get all the stored tokens
     
-    def delete_tokens():
+    def delete_tokens(self):
 
         # Add code to delete all the stored tokens
+    
+    def get_token_by_id(id, token):
+        
+        """
+        The method to get id token details.
 
+        Parameters:
+            id (String) : A String id.
+            token (Token) : A Token class instance.
+
+        Returns:
+            Token : A Token class instance representing the id token details.
+        """
 ```
 
 ## Configuration
@@ -274,17 +300,18 @@ Before you get started with creating your Python application, you need to regist
 
 - Create an instance of OAuthToken with the information that you get after registering your Zoho client.
   ```python
-  from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken, TokenType
+  from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken
 
   """
   Create a Token instance that takes the following parameters
   1 -> OAuth client id.
   2 -> OAuth client secret.
-  3 -> REFRESH/GRANT token.
-  4 -> token type.
+  3 -> Grant token.
+  4 -> Refresh token.
   5 -> OAuth redirect URL. Default value is None
+  6 -> id
   """
-  token = OAuthToken(client_id='clientId', client_secret='clientSecret', token='REFRESH/ GRANT Token', token_type=TokenType.REFRESH / TokenType.GRANT, redirect_url='redirectURL')
+  token = OAuthToken(client_id='clientId', client_secret='clientSecret', grant_token='grant_token', refresh_token="refresh_token", redirect_url='redirectURL', id="id")
   ```
 
 - Create an instance of [TokenStore](zcrmsdk/src/com/zoho/api/authenticator/store/token_store.py) to persist tokens, used for authenticating all the requests.
@@ -298,10 +325,11 @@ Before you get started with creating your Python application, you need to regist
   3 -> DataBase user name. Default value "root"
   4 -> DataBase password. Default value ""
   5 -> DataBase port number. Default value "3306"
+  6 -> DataBase table name. Default value "oauthtoken"
   """
   store = DBStore()
 
-  #store = DBStore(host='host_name', database_name='database_name', user_name='user_name', password='password', port_number='port_number')
+  #store = DBStore(host='host_name', database_name='database_name', user_name='user_name', password='password', port_number='port_number', table_name = "table_name")
 
   """
   FileStore takes the following parameter
@@ -323,8 +351,14 @@ Before you get started with creating your Python application, you need to regist
     A boolean field that validates user input for a pick list field and allows or disallows the addition of a new value to the list.
     if True - the SDK validates the input. If the value does not exist in the pick list, the SDK throws an error.
     if False - the SDK does not validate the input and makes the API request with the user’s input to the pick list
+  
+  connect_timeout (Default value is None) 
+    A  Float field to set connect timeout
+  
+  read_timeout (Default value is None) 
+    A  Float field to set read timeout
   """
-  config = SDKConfig(auto_refresh_fields=True, pick_list_validation=False)
+  config = SDKConfig(auto_refresh_fields=True, pick_list_validation=False, connect_timeout=None, read_timeout=None)
   ```
 
 - The path containing the absolute directory path (in the key resource_path) to store user-specific files containing information about fields in modules. 
@@ -357,7 +391,7 @@ from zcrmsdk.src.com.zoho.crm.api.dc import USDataCenter
 from zcrmsdk.src.com.zoho.api.authenticator.store import DBStore, FileStore
 from zcrmsdk.src.com.zoho.api.logger import Logger
 from zcrmsdk.src.com.zoho.crm.api.initializer import Initializer
-from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken, TokenType
+from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken
 from zcrmsdk.src.com.zoho.crm.api.sdk_config import SDKConfig
 
 
@@ -388,11 +422,12 @@ class SDKInitializer(object):
         Create a Token instance that takes the following parameters
         1 -> OAuth client id.
         2 -> OAuth client secret.
-        3 -> REFRESH/GRANT token.
-        4 -> token type.
+        3 -> Grant token.
+        4 -> Refresh token.
         5 -> OAuth redirect URL.
+        6 -> id
         """
-        token = OAuthToken(client_id='clientId', client_secret='clientSecret', token='REFRESH/ GRANT Token', token_type=TokenType.REFRESH / TokenType.GRANT, redirect_url='redirectURL')
+        token = OAuthToken(client_id='clientId', client_secret='clientSecret', grant_token='grant_token', refresh_token="refresh_token", redirect_url='redirectURL', id="id")
 
         """
         Create an instance of TokenStore
@@ -407,9 +442,10 @@ class SDKInitializer(object):
         3 -> DataBase user name. Default value "root"
         4 -> DataBase password. Default value ""
         5 -> DataBase port number. Default value "3306"
+        6->  DataBase table name . Default value "oauthtoken"
         """
         store = DBStore()
-        store = DBStore(host='host_name', database_name='database_name', user_name='user_name', password='password',port_number='port_number')
+        store = DBStore(host='host_name', database_name='database_name', user_name='user_name', password='password',port_number='port_number', table_name = "table_name")
 
         """
         auto_refresh_fields (Default value is False)
@@ -420,8 +456,14 @@ class SDKInitializer(object):
         A boolean field that validates user input for a pick list field and allows or disallows the addition of a new value to the list.
             if True - the SDK validates the input. If the value does not exist in the pick list, the SDK throws an error.
             if False - the SDK does not validate the input and makes the API request with the user’s input to the pick list
+
+        connect_timeout (Default value is None) 
+            A  Float field to set connect timeout
+          
+        read_timeout (Default value is None) 
+            A  Float field to set read timeout
         """
-        config = SDKConfig(auto_refresh_fields=True, pick_list_validation=False)
+        config = SDKConfig(auto_refresh_fields=True, pick_list_validation=False, connect_timeout=None, read_timeout=None)
 
         """
         The path containing the absolute directory path (in the key resource_path) to store user-specific files containing information about fields in modules. 
@@ -534,11 +576,12 @@ All other exceptions such as SDK anomalies and other unexpected behaviours are t
 
 Threads in a Python program help you achieve parallelism. By using multiple threads, you can make a Python program run faster and do multiple things simultaneously.
 
-The **Python SDK** (from version 1.x.x) supports both single-user and multi-user app.
+The **Python SDK** (from version 3.x.x) supports both single-user and multi-user app.
 
 ### Multithreading in a Multi-user App
 
 Multi-threading for multi-users is achieved using Initializer's static **switch_user()** method.
+switch_user() takes the value initialized previously for user, enviroment, token and sdk_config incase None is passed (or default value is passed). In case of request_proxy, if intended, the value has to be passed again else None(default value) will be taken.
 
 ```python
 # without proxy
@@ -557,7 +600,7 @@ from zcrmsdk.src.com.zoho.crm.api.dc import USDataCenter, EUDataCenter
 from zcrmsdk.src.com.zoho.api.authenticator.store import DBStore
 from zcrmsdk.src.com.zoho.api.logger import Logger
 from zcrmsdk.src.com.zoho.crm.api.initializer import Initializer
-from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken, TokenType
+from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken
 from zcrmsdk.src.com.zoho.crm.api.record import *
 from zcrmsdk.src.com.zoho.crm.api.request_proxy import RequestProxy
 from zcrmsdk.src.com.zoho.crm.api.sdk_config import SDKConfig
@@ -578,7 +621,7 @@ class MultiThread(threading.Thread):
         try:
             Initializer.switch_user(user=self.user, environment=self.environment, token=self.token, sdk_config=self.sdk_config, proxy=self.proxy)
 
-            print('Getting records for User: ' + Initializer.get_initializer().user.email)
+            print('Getting records for User: ' + Initializer.get_initializer().user.get_email())
 
             response = RecordOperations().get_records(self.module_api_name)
 
@@ -633,7 +676,7 @@ class MultiThread(threading.Thread):
 
         user1 = UserSignature(email="abc@zoho.com")
 
-        token1 = OAuthToken(client_id="clientId1", client_secret="clientSecret1", token="GRANT Token", token_type=TokenType.GRANT)
+        token1 = OAuthToken(client_id="clientId1", client_secret="clientSecret1", grant_token="Grant Token", refresh_token="refresh_token", id="id")
 
         environment1 = USDataCenter.PRODUCTION()
 
@@ -653,7 +696,7 @@ class MultiThread(threading.Thread):
 
         sdk_config_2 = SDKConfig(auto_refresh_fields=False, pick_list_validation=True)
 
-        token2 = OAuthToken(client_id="clientId2", client_secret="clientSecret2",token="REFRESH Token", token_type=TokenType.REFRESH, redirect_url="redirectURL")
+        token2 = OAuthToken(client_id="clientId2", client_secret="clientSecret2",grant_token="GRANT Token", refresh_token="refresh_token", redirect_url="redirectURL", id="id")
 
         request_proxy_user_2 = RequestProxy("host", 8080)
 
@@ -696,7 +739,7 @@ from zcrmsdk.src.com.zoho.crm.api.dc import USDataCenter
 from zcrmsdk.src.com.zoho.api.authenticator.store import DBStore
 from zcrmsdk.src.com.zoho.api.logger import Logger
 from zcrmsdk.src.com.zoho.crm.api.initializer import Initializer
-from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken, TokenType
+from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken
 from zcrmsdk.src.com.zoho.crm.api.sdk_config import SDKConfig
 from zcrmsdk.src.com.zoho.crm.api.record import *
 
@@ -764,7 +807,7 @@ class MultiThread(threading.Thread):
 
         user = UserSignature(email="abc@zoho.com")
 
-        token = OAuthToken(client_id="clientId", client_secret="clientSecret",token="GRANT Token", token_type=TokenType.GRANT, redirect_url="redirectURL")
+        token = OAuthToken(client_id="clientId", client_secret="clientSecret", grant_token="grant_token", refresh_token="refresh_token", redirect_url="redirectURL", id="id")
 
         environment = USDataCenter.PRODUCTION()
 
@@ -802,7 +845,7 @@ from zcrmsdk.src.com.zoho.crm.api.dc import USDataCenter
 from zcrmsdk.src.com.zoho.api.authenticator.store import DBStore
 from zcrmsdk.src.com.zoho.api.logger import Logger
 from zcrmsdk.src.com.zoho.crm.api.initializer import Initializer
-from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken, TokenType
+from zcrmsdk.src.com.zoho.api.authenticator.oauth_token import OAuthToken
 from zcrmsdk.src.com.zoho.crm.api.record import *
 from zcrmsdk.src.com.zoho.crm.api import HeaderMap, ParameterMap
 from zcrmsdk.src.com.zoho.crm.api.sdk_config import SDKConfig
@@ -839,11 +882,12 @@ class Record(object):
         Create a Token instance that takes the following parameters
         1 -> OAuth client id.
         2 -> OAuth client secret.
-        3 -> REFRESH/GRANT token.
-        4 -> token type.
+        3 -> Grant token.
+        4 -> Refresh token.
         5 -> OAuth redirect URL.
+        6 -> id
         """
-        token = OAuthToken(client_id="clientId", client_secret="clientSecret", token="REFRESH/ GRANT Token", token_type=TokenType.REFRESH / TokenType.GRANT, redirect_url="redirectURL")
+        token = OAuthToken(client_id="clientId", client_secret="clientSecret", grant_token="grant_token", refresh_token="refresh_token", redirect_url="redirectURL", id="id")
 
         """
         Create an instance of TokenStore
@@ -852,6 +896,7 @@ class Record(object):
         3 -> DataBase user name. Default value "root"
         4 -> DataBase password. Default value ""
         5 -> DataBase port number. Default value "3306"
+        6->  DataBase table name . Default value "oauthtoken"
         """
         store = DBStore()
 
@@ -864,8 +909,13 @@ class Record(object):
             A boolean field that validates user input for a pick list field and allows or disallows the addition of a new value to the list.
             if True - the SDK validates the input. If the value does not exist in the pick list, the SDK throws an error.
             if False - the SDK does not validate the input and makes the API request with the user’s input to the pick list
-        """
-        config = SDKConfig(auto_refresh_fields=True, pick_list_validation=False)
+         connect_timeout (Default value is None) 
+            A  Float field to set connect timeout
+  
+         read_timeout (Default value is None) 
+            A  Float field to set read timeout
+         """
+        config = SDKConfig(auto_refresh_fields=True, pick_list_validation=False, connect_timeout=None, read_timeout=None)
 
         """
         The path containing the absolute directory path (in the key resource_path) to store user-specific files containing information about fields in modules. 
