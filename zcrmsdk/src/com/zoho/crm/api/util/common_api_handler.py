@@ -312,7 +312,7 @@ class CommonAPIHandler(object):
 
         try:
             connector.headers[
-                Constants.ZOHO_SDK] = platform.system() + "/" + platform.release() + " python-" + Constants.API_VERSION + "/" + platform.python_version() + ":" + Constants.SDK_VERSION
+                Constants.ZOHO_SDK] = platform.system() + "/" + platform.release() + "/python-" + Constants.API_VERSION + "/" + platform.python_version() + ":" + Constants.SDK_VERSION
             response = connector.fire_request(convert_instance)
             return_object = None
 
