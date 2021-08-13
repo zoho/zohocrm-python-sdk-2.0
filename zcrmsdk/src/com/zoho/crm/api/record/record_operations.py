@@ -59,8 +59,8 @@ class RecordOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_READ)
 		handler_instance.set_param(param_instance)
 		handler_instance.set_header(header_instance)
-		Utility.get_fields(module_api_name)
 		handler_instance.set_module_api_name(module_api_name)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.response_handler import ResponseHandler
 		except Exception:
@@ -113,8 +113,8 @@ class RecordOperations(object):
 		handler_instance.set_content_type('application/json')
 		handler_instance.set_request(request)
 		handler_instance.set_header(header_instance)
-		Utility.get_fields(module_api_name)
 		handler_instance.set_module_api_name(module_api_name)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.action_handler import ActionHandler
 		except Exception:
@@ -161,6 +161,7 @@ class RecordOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_METHOD_DELETE)
 		handler_instance.set_param(param_instance)
 		handler_instance.set_header(header_instance)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.action_handler import ActionHandler
 		except Exception:
@@ -201,8 +202,8 @@ class RecordOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_READ)
 		handler_instance.set_param(param_instance)
 		handler_instance.set_header(header_instance)
-		Utility.get_fields(module_api_name)
 		handler_instance.set_module_api_name(module_api_name)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.response_handler import ResponseHandler
 		except Exception:
@@ -248,10 +249,9 @@ class RecordOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_CREATE)
 		handler_instance.set_content_type('application/json')
 		handler_instance.set_request(request)
-		handler_instance.set_mandatory_checker(True)
 		handler_instance.set_header(header_instance)
-		Utility.get_fields(module_api_name)
 		handler_instance.set_module_api_name(module_api_name)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.action_handler import ActionHandler
 		except Exception:
@@ -297,10 +297,9 @@ class RecordOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_UPDATE)
 		handler_instance.set_content_type('application/json')
 		handler_instance.set_request(request)
-		handler_instance.set_mandatory_checker(True)
 		handler_instance.set_header(header_instance)
-		Utility.get_fields(module_api_name)
 		handler_instance.set_module_api_name(module_api_name)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.action_handler import ActionHandler
 		except Exception:
@@ -341,6 +340,7 @@ class RecordOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_METHOD_DELETE)
 		handler_instance.set_param(param_instance)
 		handler_instance.set_header(header_instance)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.action_handler import ActionHandler
 		except Exception:
@@ -388,8 +388,8 @@ class RecordOperations(object):
 		handler_instance.set_content_type('application/json')
 		handler_instance.set_request(request)
 		handler_instance.set_header(header_instance)
-		Utility.get_fields(module_api_name)
 		handler_instance.set_module_api_name(module_api_name)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.action_handler import ActionHandler
 		except Exception:
@@ -431,6 +431,7 @@ class RecordOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_READ)
 		handler_instance.set_param(param_instance)
 		handler_instance.set_header(header_instance)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.deleted_records_handler import DeletedRecordsHandler
 		except Exception:
@@ -472,8 +473,8 @@ class RecordOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_READ)
 		handler_instance.set_param(param_instance)
 		handler_instance.set_header(header_instance)
-		Utility.get_fields(module_api_name)
 		handler_instance.set_module_api_name(module_api_name)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.response_handler import ResponseHandler
 		except Exception:
@@ -517,7 +518,7 @@ class RecordOperations(object):
 		handler_instance.set_content_type('application/json')
 		handler_instance.set_request(request)
 		handler_instance.set_mandatory_checker(True)
-		Utility.get_fields("Deals")
+		Utility.get_fields("Deals", handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.convert_action_handler import ConvertActionHandler
 		except Exception:
@@ -555,6 +556,7 @@ class RecordOperations(object):
 		handler_instance.set_api_path(api_path)
 		handler_instance.set_http_method(Constants.REQUEST_METHOD_GET)
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_READ)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.download_handler import DownloadHandler
 		except Exception:
@@ -604,6 +606,7 @@ class RecordOperations(object):
 		handler_instance.set_content_type('multipart/form-data')
 		handler_instance.set_request(request)
 		handler_instance.set_mandatory_checker(True)
+		Utility.get_fields(module_api_name, handler_instance)
 		Utility.verify_photo_support(module_api_name)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.file_handler import FileHandler
@@ -642,6 +645,7 @@ class RecordOperations(object):
 		handler_instance.set_api_path(api_path)
 		handler_instance.set_http_method(Constants.REQUEST_METHOD_DELETE)
 		handler_instance.set_category_method(Constants.REQUEST_METHOD_DELETE)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.file_handler import FileHandler
 		except Exception:
@@ -685,8 +689,8 @@ class RecordOperations(object):
 		handler_instance.set_content_type('application/json')
 		handler_instance.set_request(request)
 		handler_instance.set_mandatory_checker(True)
-		Utility.get_fields(module_api_name)
 		handler_instance.set_module_api_name(module_api_name)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.mass_update_action_handler import MassUpdateActionHandler
 		except Exception:
@@ -723,6 +727,7 @@ class RecordOperations(object):
 		handler_instance.set_http_method(Constants.REQUEST_METHOD_GET)
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_READ)
 		handler_instance.set_param(param_instance)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.mass_update_response_handler import MassUpdateResponseHandler
 		except Exception:
@@ -769,8 +774,8 @@ class RecordOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_READ)
 		handler_instance.set_param(param_instance)
 		handler_instance.set_header(header_instance)
-		Utility.get_fields(module_api_name)
 		handler_instance.set_module_api_name(module_api_name)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.response_handler import ResponseHandler
 		except Exception:
@@ -823,8 +828,8 @@ class RecordOperations(object):
 		handler_instance.set_content_type('application/json')
 		handler_instance.set_request(request)
 		handler_instance.set_header(header_instance)
-		Utility.get_fields(module_api_name)
 		handler_instance.set_module_api_name(module_api_name)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.action_handler import ActionHandler
 		except Exception:
@@ -871,6 +876,7 @@ class RecordOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_METHOD_DELETE)
 		handler_instance.set_param(param_instance)
 		handler_instance.set_header(header_instance)
+		Utility.get_fields(module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.record.action_handler import ActionHandler
 		except Exception:
