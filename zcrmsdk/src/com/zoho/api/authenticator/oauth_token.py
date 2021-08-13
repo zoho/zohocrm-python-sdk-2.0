@@ -266,10 +266,13 @@ class OAuthToken(Token):
             store = initializer.store
             user = initializer.user
 
-            if self.__id is not None:
-                oauth_token = initializer.store.get_token_by_id(self.__id, self)
+            if self.__access_token is None:
+                if self.__id is not None:
+                    oauth_token = initializer.store.get_token_by_id(self.__id, self)
+                else:
+                    oauth_token = initializer.store.get_token(user, self)
             else:
-                oauth_token = initializer.store.get_token(user, self)
+                oauth_token = self
 
             if oauth_token is None:
                 token = self.generate_access_token(user, store).get_access_token() if (

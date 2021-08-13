@@ -124,7 +124,6 @@ class RelatedRecordsOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_UPDATE)
 		handler_instance.set_content_type('application/json')
 		handler_instance.set_request(request)
-		handler_instance.set_mandatory_checker(True)
 		handler_instance.add_header(Header('X-EXTERNAL', 'com.zoho.crm.api.RelatedRecords.UpdateRelatedRecordsHeader'), self.__x_external)
 		Utility.get_related_lists(self.__related_list_api_name, self.__module_api_name, handler_instance)
 		try:
@@ -167,6 +166,7 @@ class RelatedRecordsOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_METHOD_DELETE)
 		handler_instance.add_header(Header('X-EXTERNAL', 'com.zoho.crm.api.RelatedRecords.DelinkRecordsHeader'), self.__x_external)
 		handler_instance.set_param(param_instance)
+		Utility.get_fields(self.__module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.related_records.action_handler import ActionHandler
 		except Exception:
@@ -258,7 +258,6 @@ class RelatedRecordsOperations(object):
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_UPDATE)
 		handler_instance.set_content_type('application/json')
 		handler_instance.set_request(request)
-		handler_instance.set_mandatory_checker(True)
 		handler_instance.add_header(Header('X-EXTERNAL', 'com.zoho.crm.api.RelatedRecords.UpdateRelatedRecordsUsingExternalIDHeader'), self.__x_external)
 		Utility.get_related_lists(self.__related_list_api_name, self.__module_api_name, handler_instance)
 		try:
@@ -443,6 +442,7 @@ class RelatedRecordsOperations(object):
 		handler_instance.set_http_method(Constants.REQUEST_METHOD_DELETE)
 		handler_instance.set_category_method(Constants.REQUEST_METHOD_DELETE)
 		handler_instance.add_header(Header('X-EXTERNAL', 'com.zoho.crm.api.RelatedRecords.DelinkRecordHeader'), self.__x_external)
+		Utility.get_fields(self.__module_api_name, handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.related_records.action_handler import ActionHandler
 		except Exception:

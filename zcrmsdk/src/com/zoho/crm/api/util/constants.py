@@ -31,7 +31,7 @@ class Constants(object):
 
     PHOTO = "photo"
 
-    API_VERSION = "v2"
+    API_VERSION = "2.0"
 
     CRM = "crm"
 
@@ -174,7 +174,7 @@ class Constants(object):
 
     ZOHO_SDK = "X-ZOHO-SDK"
 
-    SDK_VERSION = "2.0.0"
+    SDK_VERSION = "3.0.0"
 
     ZOHO_API_VERSION = "2.0"
 
@@ -653,3 +653,5 @@ class Constants(object):
     TOKEN_ERROR_MESSAGE = "token must be instance of Token."
 
     STORE_ERROR_MESSAGE = "store must be instance of Store."
+
+    SKIP_MODULES = ["deals"]

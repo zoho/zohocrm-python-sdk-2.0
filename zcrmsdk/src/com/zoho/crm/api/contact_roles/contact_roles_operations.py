@@ -273,8 +273,8 @@ class ContactRolesOperations(object):
 		handler_instance.set_http_method(Constants.REQUEST_METHOD_GET)
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_READ)
 		handler_instance.set_param(param_instance)
-		Utility.get_fields("Contacts")
 		handler_instance.set_module_api_name("Contacts")
+		Utility.get_fields("Contacts", handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.contact_roles.record_response_handler import RecordResponseHandler
 		except Exception:
@@ -311,8 +311,8 @@ class ContactRolesOperations(object):
 		handler_instance.set_api_path(api_path)
 		handler_instance.set_http_method(Constants.REQUEST_METHOD_GET)
 		handler_instance.set_category_method(Constants.REQUEST_CATEGORY_READ)
-		Utility.get_fields("Contacts")
 		handler_instance.set_module_api_name("Contacts")
+		Utility.get_fields("Contacts", handler_instance)
 		try:
 			from zcrmsdk.src.com.zoho.crm.api.contact_roles.record_response_handler import RecordResponseHandler
 		except Exception:
