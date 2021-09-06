@@ -174,7 +174,7 @@ class Constants(object):
 
     ZOHO_SDK = "X-ZOHO-SDK"
 
-    SDK_VERSION = "3.0.0"
+    SDK_VERSION = "4.0.0"
 
     ZOHO_API_VERSION = "2.0"
 
@@ -346,7 +346,9 @@ class Constants(object):
 
     CLASSES = "classes"
 
-    LOGFILE_NAME = "sdk_logs.log"
+    LOG_FILE_NAME = "sdk_logs.log"
+
+    TOKEN_FILE = "sdk_tokens.txt"
 
     USER = "user"
 
@@ -655,3 +657,7 @@ class Constants(object):
     STORE_ERROR_MESSAGE = "store must be instance of Store."
 
     SKIP_MODULES = ["deals"]
+
+    PYTHON = "python_"
+
+    OAUTH_MANDATORY_KEYS = ["grant_token", "refresh_token", "id", "access_token"]
