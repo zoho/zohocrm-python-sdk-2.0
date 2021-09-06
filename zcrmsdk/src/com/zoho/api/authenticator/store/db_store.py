@@ -218,7 +218,7 @@ class DBStore(TokenStore):
                 connection.close() if connection is not None else None
 
         except Error as ex:
-            raise SDKException(Constants.TOKEN_STORE, Constants.GET_TOKENS_DB_ERROR, None, ex)
+            raise SDKException(code=Constants.TOKEN_STORE, message=Constants.GET_TOKENS_DB_ERROR, cause=ex)
 
     def delete_tokens(self):
         cursor = None
@@ -238,7 +238,7 @@ class DBStore(TokenStore):
                 cursor.close() if cursor is not None else None
                 connection.close() if connection is not None else None
         except Error as ex:
-            raise SDKException(Constants.TOKEN_STORE, Constants.DELETE_TOKENS_DB_ERROR, Exception=ex)
+            raise SDKException(code=Constants.TOKEN_STORE, message=Constants.DELETE_TOKENS_DB_ERROR, cause=ex)
 
     def get_token_by_id(self, id, token):
         cursor = None
