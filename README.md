@@ -40,6 +40,13 @@ Since Zoho CRM APIs are authenticated with OAuth2 standards, you should register
 
 - Generate grant token by providing the necessary scopes, time duration (the duration for which the generated token is valid) and Scope Description.
 
+Note:
+
+1. For Contact Roles and Records API, you will need to provide the **ZohoCRM.settings.fields.ALL** scope along with the **ZohoCRM.modules.ALL** scope while generating the OAuthtoken.
+
+2. For Related Records API, the scopes required for generating OAuthtoken are **ZohoCRM.modules.ALL**, **ZohoCRM.settings.fields.ALL** and **ZohoCRM.settings.related_lists.ALL**.
+
+
 ## Environmental Setup
 
 Python SDK is installable through **pip**. **pip** is a tool for dependency management in Python. SDK expects the following from the client app.
