@@ -660,7 +660,7 @@ class Utility(object):
         if Constants.LOOKUP in api_type.lower():
             field_detail[Constants.LOOKUP] = True
 
-        if Constants.CONSENT_LOOKUP in api_type.lower():
+        if Constants.CONSENT_LOOKUP in api_type.lower() or Constants.OWNER_LOOKUP in api_type.lower():
             field_detail[Constants.SKIP_MANDATORY] = True
 
         if api_type in Utility.apitype_vs_structurename:

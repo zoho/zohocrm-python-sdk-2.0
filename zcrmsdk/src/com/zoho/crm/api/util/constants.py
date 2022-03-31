@@ -168,13 +168,13 @@ class Constants(object):
 
     OBJECT_KEY = "object"
 
-    PHOTO_SUPPORTED_MODULES = ["leads", "contacts", "accounts", "products", "vendors", "deals", "cases", "solutions"]
+    PHOTO_SUPPORTED_MODULES = ["leads", "contacts", "accounts", "products", "vendors"]
 
     GIVEN_LENGTH = "given-length"
 
     ZOHO_SDK = "X-ZOHO-SDK"
 
-    SDK_VERSION = "4.0.0"
+    SDK_VERSION = "5.0.0"
 
     ZOHO_API_VERSION = "2.0"
 
@@ -274,7 +274,7 @@ class Constants(object):
 
     REQUIRED = "required"
 
-    REQUIRED_IN_UPDATE = "required_in_update"
+    REQUIRED_IN_UPDATE = "required-in-update"
 
     PRIMARY = "primary"
 
@@ -554,7 +554,7 @@ class Constants(object):
 
     REQUEST_CATEGORY_ACTION = "ACTION"
 
-    SKIP_MANDATORY = "skip_mandatory"
+    SKIP_MANDATORY = "skip-mandatory"
 
     FORMULA = "formula"
 
@@ -661,3 +661,5 @@ class Constants(object):
     PYTHON = "python_"
 
     OAUTH_MANDATORY_KEYS = ["grant_token", "refresh_token", "id", "access_token"]
+
+    OWNER_LOOKUP = "ownerlookup"
