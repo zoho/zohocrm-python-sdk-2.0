@@ -64,7 +64,7 @@ Python SDK is installable through **pip**. **pip** is a tool for dependency mana
     - Run the command below:
 
     ```sh
-    pip install zohocrmsdk2_0
+    pip install zohocrmsdk2_0==5.x.x
     ```
 - The Python SDK will be installed in your client application.
 
@@ -597,8 +597,6 @@ All other exceptions such as SDK anomalies and other unexpected behaviours are t
 ## Threading in the Python SDK
 
 Threads in a Python program help you achieve parallelism. By using multiple threads, you can make a Python program run faster and do multiple things simultaneously.
-
-The **Python SDK** (from version 3.x.x) supports both single-user and multi-user app.
 
 ### Multithreading in a Multi-user App
 
