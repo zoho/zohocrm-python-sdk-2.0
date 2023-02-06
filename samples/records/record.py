@@ -594,6 +594,21 @@ class Record(object):
 
         # Get instance of Record Class
         record = ZCRMRecord()
+        
+        # Get instance pf ApplyFeatureExecution Class
+        apply_feature_execution= ApplyFeatureExecution()
+        
+        # List of ApplyFetaureExection instances
+        apply_feature_list=[]
+        
+        # set layoutrule to ApplyFeatureExecution instance
+        apply_feature_execution.set_name("layout_rules")
+        
+        # add ApplyFeatureExecution instance to List
+        apply_feature_list.append(apply_feature_execution)
+        
+        # set List to the BodyWrapper instance
+        request.set_apply_feature_execution(apply_feature_list)
 
         # Value to Record's fields can be provided in any of the following ways
 
@@ -2280,6 +2295,21 @@ class Record(object):
 
         # Get instance of Record Class
         record = ZCRMRecord()
+        
+        # Get instance pf ApplyFeatureExecution Class
+        apply_feature_execution= ApplyFeatureExecution()
+        
+        # List of ApplyFetaureExection instances
+        apply_feature_list=[]
+        
+        # set layoutrule to ApplyFeatureExecution instance
+        apply_feature_execution.set_name("layout_rules")
+        
+        # add ApplyFeatureExecution instance to List
+        apply_feature_list.append(apply_feature_execution)
+        
+        # set List to the BodyWrapper instance
+        request.set_apply_feature_execution(apply_feature_list)
 
         # Value to Record's fields can be provided in any of the following ways
 
@@ -2702,6 +2732,21 @@ class Record(object):
 
         # Get instance of Record Class
         record1 = ZCRMRecord()
+        
+        # Get instance pf ApplyFeatureExecution Class
+        apply_feature_execution= ApplyFeatureExecution()
+        
+        # List of ApplyFetaureExection instances
+        apply_feature_list=[]
+        
+        # set layoutrule to ApplyFeatureExecution instance
+        apply_feature_execution.set_name("layout_rules")
+        
+        # add ApplyFeatureExecution instance to List
+        apply_feature_list.append(apply_feature_execution)
+        
+        # set List to the BodyWrapper instance
+        request.set_apply_feature_execution(apply_feature_list)
 
         # ID of the record to be updated
         record1.set_id(3477061000011218001)
@@ -3010,6 +3055,21 @@ class Record(object):
 
         # Get instance of Record Class
         record_1 = ZCRMRecord()
+        
+        # Get instance pf ApplyFeatureExecution Class
+        apply_feature_execution= ApplyFeatureExecution()
+        
+        # List of ApplyFetaureExection instances
+        apply_feature_list=[]
+        
+        # set layoutrule to ApplyFeatureExecution instance
+        apply_feature_execution.set_name("layout_rules")
+        
+        # add ApplyFeatureExecution instance to List
+        apply_feature_list.append(apply_feature_execution)
+        
+        # set List to the BodyWrapper instance
+        request.set_apply_feature_execution(apply_feature_list)
 
         # Value to Record's fields can be provided in any of the following ways
 
