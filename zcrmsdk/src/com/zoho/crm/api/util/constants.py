@@ -174,7 +174,7 @@ class Constants(object):
 
     ZOHO_SDK = "X-ZOHO-SDK"
 
-    SDK_VERSION = "5.1.0"
+    SDK_VERSION = "6.0.0"
 
     ZOHO_API_VERSION = "2.0"
 

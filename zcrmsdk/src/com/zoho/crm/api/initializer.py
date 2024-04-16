@@ -231,9 +231,6 @@ class Initializer(object):
 
             raise SDKException(Constants.SWITCH_USER_ERROR, Constants.REQUEST_PROXY_ERROR_MESSAGE, details=error)
 
-        if sdk_config is None:
-            sdk_config = SDKConfig()
-
         previous_initializer = Initializer.get_initializer()
 
         initializer = Initializer()

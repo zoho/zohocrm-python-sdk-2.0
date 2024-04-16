@@ -64,7 +64,7 @@ Python SDK is installable through **pip**. **pip** is a tool for dependency mana
     - Run the command below:
 
     ```sh
-    pip install zohocrmsdk2_0==5.x.x
+    pip install zohocrmsdk2_0==6.x.x
     ```
 - The Python SDK will be installed in your client application.
 
