@@ -14,6 +14,7 @@ class RequestWrapper(object):
 		self.__operation = None
 		self.__callback = None
 		self.__resource = None
+		self.__ignore_empty = None
 		self.__key_modified = dict()
 
 	def get_character_encoding(self):
@@ -116,6 +117,30 @@ class RequestWrapper(object):
 		
 		self.__resource = resource
 		self.__key_modified['resource'] = 1
+
+	def get_ignore_empty(self):
+		"""
+		The method to get the ignore_empty
+
+		Returns:
+			bool: A bool representing the ignore_empty
+		"""
+
+		return self.__ignore_empty
+
+	def set_ignore_empty(self, ignore_empty):
+		"""
+		The method to set the value to ignore_empty
+
+		Parameters:
+			ignore_empty (bool) : A bool representing the ignore_empty
+		"""
+
+		if ignore_empty is not None and not isinstance(ignore_empty, bool):
+			raise SDKException(Constants.DATA_TYPE_ERROR, 'KEY: ignore_empty EXPECTED TYPE: bool', None, None)
+		
+		self.__ignore_empty = ignore_empty
+		self.__key_modified['ignore_empty'] = 1
 
 	def is_key_modified(self, key):
 		"""

@@ -11,7 +11,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='zohocrmsdk2_0',
-    version='5.1.0',
+    version='6.0.0',
     description='Zoho CRM SDK for Python developers',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -35,7 +35,9 @@ setup(
     install_requires=[
         'requests',
         'python-dateutil',
-        'urllib3'
+        'urllib3',
+        'mysql-connector-python',
+        'setuptools'
     ],
     keywords=['development', 'zoho', 'crm', 'api', 'zcrmsdk', 'sdk', 'zcrm','zohocrmsdk2_0'],
     packages=find_packages(),
